@@ -2,7 +2,7 @@
 
 let min = 1,
     max = 10,
-    winningCondition = 2,
+    winningCondition = getRandomNum(min,max),
     guessLeft = 3;
 
 // Get UI Elements
@@ -14,6 +14,11 @@ const   gameDiv = document.querySelector('#game'),
         guessInput = document.querySelector('#guess-input'),
         message = document.querySelector('.message');
         
+game.addEventListener('mousedown', function(e){
+    if(e.target.className === 'play-again'){
+        window.location.reload();
+    }
+});
 
 guessBtn.addEventListener('click',function(){
     // convert the String to the Number
@@ -29,10 +34,24 @@ guessBtn.addEventListener('click',function(){
         guessInput.disabled = true;
         showMessage(`${guess} is correct, YOU WIN !!!!!`,'green');
         guessInput.style.borderColor = 'green';
+        showPlayBtn();
     }else {
-
+        if(isNaN(guess) || guess < min || guess > max){
+            showMessage(`Please input the number between ${min} and ${max}`,'red');
+        }else{
+            guessLeft = guessLeft - 1;
+            if(guessLeft <= 0){
+                guessInput.disabled = true;
+                showMessage(`Game Over You LOST Correct Number is ${winningCondition}`, 'red');
+                showPlayBtn();
+            }else {
+                showMessage(`You have only ${guessLeft} Guess Left!`,'red');
+                guessInput.value = '';
+            }  
+        }
     }
 });
+
 
 // Error Message
 function showMessage(msg,colour){
@@ -40,7 +59,16 @@ function showMessage(msg,colour){
     message.textContent = msg;
 }
 
+// show play again btn
+function showPlayBtn(){
+    guessBtn.value = 'Play Again';
+    guessBtn.className = 'play-again';
+}
 
+// Generate Random Number
+function getRandomNum(min,max){
+    return Math.floor(Math.random()*(max-min+1)+min);
+}
 
 
 
